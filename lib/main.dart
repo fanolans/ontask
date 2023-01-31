@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ontask/screens/camera_home_screen.dart';
+import 'package:ontask/screens/location_home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const CameraHomeScreen(),
+      home: const LocationHomeScreen(),
     );
   }
 }
