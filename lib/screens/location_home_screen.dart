@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:ontask/screens/map_screen.dart';
 import 'package:ontask/services/location_service.dart';
 
 class LocationHomeScreen extends StatefulWidget {
@@ -13,6 +14,7 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
   LocationData? _locationData;
   final Location _location = Location();
   String _staticMapUrl = '';
+  String _address = '';
 
   @override
   void initState() {
@@ -42,8 +44,7 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
       body: Column(
         children: [
           if (_staticMapUrl.isNotEmpty) Image.network(_staticMapUrl),
-          if (_locationData != null)
-            Text('${_locationData!.latitude}, ${_locationData!.longitude}'),
+          if (_address.isNotEmpty) Text(_address),
           ElevatedButton(
             onPressed: () async {
               bool serviceEnabled = await _location.serviceEnabled();
@@ -62,10 +63,14 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
                 }
               }
               final locationData = await _location.getLocation();
+              String address = await LocationService.getCoordinateAddress(
+                  latitude: locationData.latitude!,
+                  longitude: locationData.longitude!);
               print(locationData.latitude);
               print(locationData.longitude);
               setState(() {
                 _locationData = locationData;
+                _address = address;
                 _staticMapUrl = LocationService.generateStaticMapUrl(
                   latitude: locationData.latitude!,
                   longitude: locationData.longitude!,
@@ -73,6 +78,14 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
               });
             },
             child: const Text('Get location'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (builder) => const MapScreen(),
+              ),
+            ),
+            child: const Text('Open Map'),
           ),
         ],
       ),
