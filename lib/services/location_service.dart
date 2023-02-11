@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 const googleApiKey = 'AIzaSyBym3WxDcjYJRf5iqUcdeHh8MZbcBj4we4';
@@ -17,7 +19,8 @@ class LocationService {
     final uri = Uri.parse(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=$googleApiKey');
     final response = await http.get(uri);
-    print(response.body);
-    return '';
+    final results = json.decode(response.body);
+
+    return results['results'][0]['formatted_address'];
   }
 }
