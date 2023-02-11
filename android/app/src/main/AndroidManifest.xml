@@ -6,6 +6,7 @@
         android:label="ontask"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBym3WxDcjYJRf5iqUcdeHh8MZbcBj4we4"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
