@@ -34,18 +34,32 @@ class _MapScreenState extends State<MapScreen> {
       appBar: AppBar(
         title: Text(_placeLocation.address),
       ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: LatLng(_placeLocation.latitude, _placeLocation.longitude),
-          zoom: 15,
-        ),
-        markers: {
-          Marker(
-            markerId: const MarkerId('userLocaion'),
-            position: LatLng(_placeLocation.latitude, _placeLocation.longitude),
+      body: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: CameraPosition(
+              target: LatLng(_placeLocation.latitude, _placeLocation.longitude),
+              zoom: 15,
+            ),
+            markers: {
+              Marker(
+                markerId: const MarkerId('userLocaion'),
+                position:
+                    LatLng(_placeLocation.latitude, _placeLocation.longitude),
+              ),
+            },
+            onTap: setLocation,
           ),
-        },
-        onTap: setLocation,
+          Positioned(
+            bottom: 0,
+            left: 50,
+            right: 50,
+            child: ElevatedButton(
+              onPressed: () {},
+              child: const Text('Set Lokasi'),
+            ),
+          ),
+        ],
       ),
     );
   }
