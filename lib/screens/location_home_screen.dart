@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:ontask/services/location_service.dart';
 
 class LocationHomeScreen extends StatefulWidget {
   const LocationHomeScreen({super.key});
@@ -11,6 +12,27 @@ class LocationHomeScreen extends StatefulWidget {
 class _LocationHomeScreenState extends State<LocationHomeScreen> {
   LocationData? _locationData;
   final Location _location = Location();
+  String _staticMapUrl = '';
+
+  @override
+  void initState() {
+    _location.requestService().then((serviceEnabled) {
+      if (serviceEnabled) {
+        _location.requestPermission().then((permissionStatus) {
+          if (permissionStatus == PermissionStatus.granted) {
+            _location.enableBackgroundMode(enable: true);
+            _location.onLocationChanged.listen((locationData) {
+              print(locationData.latitude);
+              print(locationData.longitude);
+            });
+          }
+        });
+      }
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +41,7 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
       ),
       body: Column(
         children: [
+          if (_staticMapUrl.isNotEmpty) Image.network(_staticMapUrl),
           if (_locationData != null)
             Text('${_locationData!.latitude}, ${_locationData!.longitude}'),
           ElevatedButton(
@@ -43,6 +66,10 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
               print(locationData.longitude);
               setState(() {
                 _locationData = locationData;
+                _staticMapUrl = LocationService.generateStaticMapUrl(
+                  latitude: locationData.latitude!,
+                  longitude: locationData.longitude!,
+                );
               });
             },
             child: const Text('Get location'),
