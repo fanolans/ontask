@@ -4,7 +4,8 @@ import 'package:ontask/models/place_location.dart';
 import 'package:ontask/services/location_service.dart';
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  const MapScreen({Key? key, required this.setLocationFn}) : super(key: key);
+  final Function(PlaceLocation placeLocation) setLocationFn;
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -55,7 +56,9 @@ class _MapScreenState extends State<MapScreen> {
             left: 50,
             right: 50,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                widget.setLocationFn(_placeLocation);
+              },
               child: const Text('Set Lokasi'),
             ),
           ),
