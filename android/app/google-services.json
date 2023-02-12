@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "668495340698",
+    "project_id": "ontask-74e02",
+    "storage_bucket": "ontask-74e02.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668495340698:android:6c645b821ad7ad61256b23",
+        "android_client_info": {
+          "package_name": "com.example.ontask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668495340698-b0s978ddlt20jtn8dvrmtgvftn0mql9m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCG-83zY6PXH0TjV6KUiWkZCX3uYEYmYa0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668495340698-b0s978ddlt20jtn8dvrmtgvftn0mql9m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
