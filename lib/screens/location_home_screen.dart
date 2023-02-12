@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:ontask/models/place_location.dart';
 import 'package:ontask/screens/map_screen.dart';
 import 'package:ontask/services/location_service.dart';
 
@@ -11,7 +13,7 @@ class LocationHomeScreen extends StatefulWidget {
 }
 
 class _LocationHomeScreenState extends State<LocationHomeScreen> {
-  LocationData? _locationData;
+  LatLng? _locationData;
   final Location _location = Location();
   String _staticMapUrl = '';
   String _address = '';
@@ -31,8 +33,18 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
         });
       }
     });
-
     super.initState();
+  }
+
+  void setLocation(PlaceLocation placeLocation) {
+    setState(() {
+      _locationData = LatLng(placeLocation.latitude, placeLocation.longitude);
+      _address = placeLocation.address;
+      _staticMapUrl = LocationService.generateStaticMapUrl(
+        latitude: placeLocation.latitude,
+        longitude: placeLocation.longitude,
+      );
+    });
   }
 
   @override
@@ -66,10 +78,11 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
               String address = await LocationService.getCoordinateAddress(
                   latitude: locationData.latitude!,
                   longitude: locationData.longitude!);
-              print(locationData.latitude);
-              print(locationData.longitude);
               setState(() {
-                _locationData = locationData;
+                _locationData = LatLng(
+                  locationData.latitude!,
+                  locationData.longitude!,
+                );
                 _address = address;
                 _staticMapUrl = LocationService.generateStaticMapUrl(
                   latitude: locationData.latitude!,
@@ -82,7 +95,9 @@ class _LocationHomeScreenState extends State<LocationHomeScreen> {
           ElevatedButton(
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (builder) => const MapScreen(),
+                builder: (builder) => MapScreen(
+                  setLocationFn: setLocation,
+                ),
               ),
             ),
             child: const Text('Open Map'),
