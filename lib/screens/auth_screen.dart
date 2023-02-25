@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ontask/widgets/auth_form.dart';
@@ -19,16 +20,26 @@ class _AuthScreenState extends State<AuthScreen> {
     required bool isLogin,
   }) async {
     try {
+      UserCredential userCredential;
       if (isLogin) {
-        await _firebaseAuth.signInWithEmailAndPassword(
+        userCredential = await _firebaseAuth.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
       } else {
-        await _firebaseAuth.createUserWithEmailAndPassword(
+        userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
+        if (userCredential.user != null) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userCredential.user!.uid)
+              .set({
+            'email': email,
+            'username': username,
+          });
+        }
       }
     } on FirebaseAuthException catch (e) {
       var message = e.message ?? 'Mohon periksa kembali data anda';
