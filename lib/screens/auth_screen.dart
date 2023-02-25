@@ -8,6 +8,16 @@ class AuthScreen extends StatefulWidget {
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
+void submitAuthForm({
+  required String email,
+  required String username,
+  required String password,
+  required bool isLogin,
+}) {
+  if (isLogin) {
+  } else {}
+}
+
 class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
@@ -22,7 +32,9 @@ class _AuthScreenState extends State<AuthScreen> {
                 SizedBox(
                   height: 25,
                 ),
-                AuthForm(),
+                AuthForm(
+                  submitAuthFormFn: submitAuthForm,
+                ),
               ],
             ),
           ),
