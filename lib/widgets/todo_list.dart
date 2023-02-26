@@ -39,7 +39,9 @@ class _TodoListState extends State<TodoList> {
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (builder) => const TodoDetailScreen(),
+                        builder: (builder) => TodoDetailScreen(
+                          todo: todoList[index],
+                        ),
                       ),
                     );
                   },
