@@ -13,20 +13,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ontask'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              FirebaseAuth.instance.signOut();
-            },
-            icon: const Icon(Icons.exit_to_app),
-          ),
-        ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(
+        FocusNode(),
       ),
-      body: Container(
-        child: Column(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Ontask'),
+          actions: [
+            IconButton(
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
+              icon: const Icon(Icons.exit_to_app),
+            ),
+          ],
+        ),
+        body: Column(
           children: const [
             Expanded(
               child: TodoList(),
