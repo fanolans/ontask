@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ontask/widgets/todo_list.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,14 +25,25 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (ctx, index) {
-          return const Text('Ontask');
-        },
-      ),
+      body: const TodoList(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          FirebaseFirestore.instance
+              .collection('todos')
+              .snapshots()
+              .listen((data) {
+            data.docs.forEach((element) {
+              print(element['title']);
+            });
+          });
+          FirebaseFirestore.instance
+              .collection('todos')
+              .doc('HHALYo307wAuUHMge7ft')
+              .get()
+              .then(
+                (value) => print(value['title']),
+              );
+        },
         child: const Icon(Icons.add),
       ),
     );
