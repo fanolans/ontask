@@ -18,7 +18,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Ontask',
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, authSnapshot) {
