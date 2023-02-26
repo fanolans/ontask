@@ -23,7 +23,7 @@ class _NewTodoState extends State<NewTodo> {
             child: TextField(
               controller: _todoTitleController,
               decoration: InputDecoration(
-                hintText: 'Saya akan...',
+                hintText: 'Rencana kegiatan...',
                 border: OutlineInputBorder(
                   borderSide: const BorderSide(width: 0.5),
                   borderRadius: BorderRadius.circular(25),
