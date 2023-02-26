@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ontask/services/database_service.dart';
 import 'package:ontask/widgets/todo_list.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,6 +12,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _todoTitle = '';
+  final _todoTitleController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,26 +29,52 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: const TodoList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          FirebaseFirestore.instance
-              .collection('todos')
-              .snapshots()
-              .listen((data) {
-            data.docs.forEach((element) {
-              print(element['title']);
-            });
-          });
-          FirebaseFirestore.instance
-              .collection('todos')
-              .doc('HHALYo307wAuUHMge7ft')
-              .get()
-              .then(
-                (value) => print(value['title']),
-              );
-        },
-        child: const Icon(Icons.add),
+      body: Container(
+        child: Column(
+          children: [
+            const Expanded(
+              child: TodoList(),
+            ),
+            Container(
+              padding: const EdgeInsets.all(12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _todoTitleController,
+                      decoration: InputDecoration(
+                        hintText: 'Saya akan...',
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(width: 0.5),
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 0),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _todoTitle = value;
+                        });
+                      },
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: _todoTitle.isEmpty
+                        ? null
+                        : () {
+                            DatabaseService().addNewTitle(_todoTitle);
+                            _todoTitleController.clear();
+                          },
+                    style: ElevatedButton.styleFrom(
+                      shape: const CircleBorder(),
+                    ),
+                    child: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
