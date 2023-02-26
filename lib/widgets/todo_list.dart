@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ontask/models/todo_model.dart';
+import 'package:ontask/screens/todo_detail_screen.dart';
 
 import '../services/database_service.dart';
 
@@ -35,6 +36,13 @@ class _TodoListState extends State<TodoList> {
             itemBuilder: (ctx, index) {
               return Card(
                 child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (builder) => const TodoDetailScreen(),
+                      ),
+                    );
+                  },
                   leading: IconButton(
                     onPressed: () {},
                     icon: const Icon(Icons.circle_outlined),
