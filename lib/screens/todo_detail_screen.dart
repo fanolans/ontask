@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:ontask/models/todo_model.dart';
 
 class TodoDetailScreen extends StatefulWidget {
-  const TodoDetailScreen({super.key});
+  const TodoDetailScreen({super.key, required this.todo});
+  final Todo todo;
 
   @override
   State<TodoDetailScreen> createState() => _TodoDetailScreenState();
 }
 
 class _TodoDetailScreenState extends State<TodoDetailScreen> {
+  Todo _todo = Todo(id: '', title: '');
+  final _todoTitleController = TextEditingController();
+
+  @override
+  void initState() {
+    _todo = widget.todo;
+    _todoTitleController.text = _todo.title;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,8 +35,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             const SizedBox(
               height: 10,
             ),
-            const TextField(
-              decoration: InputDecoration(hintText: 'Saya akan...'),
+            TextField(
+              controller: _todoTitleController,
+              decoration: const InputDecoration(hintText: 'Saya akan...'),
             ),
             const SizedBox(
               height: 25,
