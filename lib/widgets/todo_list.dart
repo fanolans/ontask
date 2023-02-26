@@ -1,5 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:ontask/models/todo_model.dart';
+
+import '../services/database_service.dart';
 
 class TodoList extends StatefulWidget {
   const TodoList({super.key});
@@ -12,8 +14,8 @@ class _TodoListState extends State<TodoList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('todos').snapshots(),
-      builder: (context, AsyncSnapshot<QuerySnapshot> todosSnapshot) {
+      stream: DatabaseService().todos,
+      builder: (context, AsyncSnapshot<List<Todo>> todosSnapshot) {
         if (todosSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),
@@ -26,12 +28,32 @@ class _TodoListState extends State<TodoList> {
             ),
           );
         }
-        final documents = todosSnapshot.data!.docs;
-        return ListView.builder(
-            itemCount: documents.length,
+        if (todosSnapshot.data != null) {
+          final todoList = todosSnapshot.data as List<Todo>;
+          return ListView.builder(
+            itemCount: todoList.length,
             itemBuilder: (ctx, index) {
-              return Text(documents[index]['title']);
-            });
+              return Card(
+                child: ListTile(
+                  leading: IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.circle_outlined),
+                  ),
+                  title: Text(todoList[index].title),
+                  subtitle: todoList[index].dueDate == null
+                      ? null
+                      : Text(
+                          todoList[index].dueDate.toString(),
+                        ),
+                ),
+              );
+            },
+          );
+        } else {
+          return const Center(
+            child: Text('Tidak ada data'),
+          );
+        }
       },
     );
   }
