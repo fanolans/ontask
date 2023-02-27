@@ -12,6 +12,7 @@ class TodoDetailScreen extends StatefulWidget {
 class _TodoDetailScreenState extends State<TodoDetailScreen> {
   Todo _todo = Todo(id: '', title: '');
   final _todoTitleController = TextEditingController();
+  final _today = DateTime.now();
 
   @override
   void initState() {
@@ -38,6 +39,9 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             TextField(
               controller: _todoTitleController,
               decoration: const InputDecoration(hintText: 'Saya akan...'),
+              onChanged: (value) {
+                _todo = _todo.copyWith(title: value);
+              },
             ),
             const SizedBox(
               height: 25,
@@ -46,22 +50,72 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             const SizedBox(
               height: 10,
             ),
+            if (_todo.dueDate != null)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _todo.dueDate.toString(),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (_todo.dueDate == null)
+              Row(
+                children: [
+                  dueDateButton('Hari ini', value: _today),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  dueDateButton(
+                    'Besok',
+                    value: _today.add(
+                      const Duration(days: 1),
+                    ),
+                  ),
+                ],
+              ),
             Row(
               children: [
-                dueDateButton('Hari ini'),
+                dueDateButton(
+                  'Minggu depan',
+                  value: _today.add(
+                    Duration(days: (_today.weekday - 7).abs() + 1),
+                  ),
+                ),
                 const SizedBox(
                   width: 10,
                 ),
-                dueDateButton('Besok'),
-              ],
-            ),
-            Row(
-              children: [
-                dueDateButton('Minggu depan'),
-                const SizedBox(
-                  width: 10,
+                dueDateButton(
+                  'Custom',
+                  onPressed: () async {
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: _today,
+                      firstDate: _today,
+                      lastDate: DateTime(_today.year + 100),
+                    );
+                    if (pickedDate != null) {
+                      setState(
+                        () {
+                          _todo = _todo.copyWith(dueDate: pickedDate);
+                        },
+                      );
+                    }
+                  },
                 ),
-                dueDateButton('Custom'),
               ],
             ),
             const SizedBox(
@@ -153,7 +207,11 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }) {
     return Expanded(
       child: ElevatedButton.icon(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            _todo = _todo.copyWith(dueDate: value);
+          });
+        },
         icon: const Icon(Icons.add_alarm),
         label: Text(text),
         style: ElevatedButton.styleFrom(
