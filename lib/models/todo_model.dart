@@ -26,11 +26,18 @@ class Todo {
     double? latitude,
     double? longitude,
   }) {
+    if (dueDate != null) {
+      if (dueDate.compareTo(DateTime(0)) == 0) {
+        dueDate = null;
+      }
+    } else {
+      dueDate = this.dueDate;
+    }
     return Todo(
       id: id ?? this.id,
       title: title ?? this.title,
       note: note ?? this.note,
-      dueDate: dueDate ?? this.dueDate,
+      dueDate: dueDate,
       completed: completed ?? this.completed,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
