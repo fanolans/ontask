@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ontask/models/place_location.dart';
 import 'package:ontask/models/todo_model.dart';
 
 import '../function.dart';
+import '../widgets/map_widget.dart';
 
 class TodoDetailScreen extends StatefulWidget {
   const TodoDetailScreen({super.key, required this.todo});
@@ -131,16 +133,65 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Text('Tap untuk menambahkan catatan'),
-              ),
+            GestureDetector(
+              onTap: () async {
+                String? note = await showDialog(
+                  context: context,
+                  builder: (builder) {
+                    String tempNote = _todo.note;
+                    return Dialog(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Catatan',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            TextFormField(
+                              initialValue: tempNote,
+                              maxLines: 6,
+                              onChanged: (value) {
+                                tempNote = value;
+                              },
+                            ),
+                            ElevatedButton(
+                              onPressed: () =>
+                                  Navigator.of(context).pop(tempNote),
+                              child: const Text('Selesai'),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+                if (note != null) {
+                  setState(() {
+                    _todo = _todo.copyWith(note: note);
+                  });
+                }
+              },
+              child: _todo.note.isEmpty
+                  ? Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 0.5),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Center(
+                        child: Text('Tap untuk menambahkan catatan'),
+                      ),
+                    )
+                  : SizedBox(
+                      width: double.infinity,
+                      child: Text(
+                        _todo.note,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
             ),
             const SizedBox(
               height: 25,
@@ -149,15 +200,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
             const SizedBox(
               height: 10,
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.5),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Text('Tap untuk menambahkan lokasi'),
+            MapWidget(
+              placeLocation: PlaceLocation(
+                latitude: _todo.latitude,
+                longitude: _todo.longitude,
               ),
             ),
             const SizedBox(
