@@ -16,4 +16,24 @@ class Todo {
     this.latitude = 0.0,
     this.longitude = 0.0,
   });
+
+  Todo copyWith({
+    String? id,
+    String? title,
+    String? note,
+    DateTime? dueDate,
+    bool? completed,
+    double? latitude,
+    double? longitude,
+  }) {
+    return Todo(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      note: note ?? this.note,
+      dueDate: dueDate ?? this.dueDate,
+      completed: completed ?? this.completed,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+    );
+  }
 }
