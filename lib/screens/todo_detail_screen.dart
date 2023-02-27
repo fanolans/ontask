@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ontask/models/todo_model.dart';
 
+import '../function.dart';
+
 class TodoDetailScreen extends StatefulWidget {
   const TodoDetailScreen({super.key, required this.todo});
   final Todo todo;
@@ -58,11 +60,15 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          _todo.dueDate.toString(),
+                          formatDateTime(_todo.dueDate),
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            _todo = _todo.copyWith(dueDate: DateTime(0));
+                          });
+                        },
                         icon: const Icon(
                           Icons.delete,
                           color: Colors.red,
@@ -207,11 +213,12 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
   }) {
     return Expanded(
       child: ElevatedButton.icon(
-        onPressed: () {
-          setState(() {
-            _todo = _todo.copyWith(dueDate: value);
-          });
-        },
+        onPressed: onPressed ??
+            () {
+              setState(() {
+                _todo = _todo.copyWith(dueDate: value);
+              });
+            },
         icon: const Icon(Icons.add_alarm),
         label: Text(text),
         style: ElevatedButton.styleFrom(
