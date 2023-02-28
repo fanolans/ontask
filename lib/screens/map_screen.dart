@@ -25,6 +25,13 @@ class _MapScreenState extends State<MapScreen> {
         return null;
       }
     }
+    PermissionStatus permissionStatus = await location.hasPermission();
+    if (permissionStatus == PermissionStatus.denied) {
+      permissionStatus = await location.requestPermission();
+      if (permissionStatus == PermissionStatus.denied) {
+        return null;
+      }
+    }
     location.getLocation();
   }
 
