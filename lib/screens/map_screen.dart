@@ -18,6 +18,13 @@ class _MapScreenState extends State<MapScreen> {
 
   Future getUserLocation() async {
     Location location = Location();
+    bool serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return null;
+      }
+    }
     location.getLocation();
   }
 
