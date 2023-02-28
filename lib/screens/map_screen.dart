@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:ontask/services/location_service.dart';
 
 import '../models/place_location.dart';
 
@@ -17,22 +18,18 @@ class _MapScreenState extends State<MapScreen> {
   String _address = '';
 
   Future getUserLocation() async {
-    Location location = Location();
-    bool serviceEnabled = await location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-      if (!serviceEnabled) {
-        return null;
-      }
+    LocationData? locationData = await LocationService.getUserLocation();
+    if (locationData != null) {
+      setLocation(
+        LatLng(locationData.latitude!, locationData.longitude!),
+      );
     }
-    PermissionStatus permissionStatus = await location.hasPermission();
-    if (permissionStatus == PermissionStatus.denied) {
-      permissionStatus = await location.requestPermission();
-      if (permissionStatus == PermissionStatus.denied) {
-        return null;
-      }
-    }
-    location.getLocation();
+  }
+
+  Future setLocation(LatLng position) async {
+    setState(() {
+      _pickedLocation = position;
+    });
   }
 
   @override
@@ -40,12 +37,27 @@ class _MapScreenState extends State<MapScreen> {
     if (widget.initialLocaion.latitude == 0 &&
         widget.initialLocaion.longitude == 0) {
       getUserLocation();
+    } else {
+      setLocation(
+        LatLng(widget.initialLocaion.latitude, widget.initialLocaion.longitude),
+      );
     }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(_address),
+      ),
+      body: GoogleMap(
+        initialCameraPosition: CameraPosition(
+          target: _pickedLocation,
+          zoom: 15,
+        ),
+        myLocationEnabled: true,
+      ),
+    );
   }
 }
