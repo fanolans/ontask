@@ -25,6 +25,15 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     super.initState();
   }
 
+  void _setLocation(PlaceLocation placeLocation) {
+    setState(() {
+      _todo = _todo.copyWith(
+        latitude: placeLocation.latitude,
+        longitude: placeLocation.longitude,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -205,6 +214,7 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
                 latitude: _todo.latitude,
                 longitude: _todo.longitude,
               ),
+              setLocationFn: _setLocation,
             ),
             const SizedBox(
               height: 25,
