@@ -42,7 +42,7 @@ class _NewTodoState extends State<NewTodo> {
             onPressed: _todoTitle.isEmpty
                 ? null
                 : () {
-                    DatabaseService().addNewTitle(_todoTitle);
+                    DatabaseService().addNewTodo(_todoTitle);
                     _todoTitleController.clear();
                   },
             style: ElevatedButton.styleFrom(
