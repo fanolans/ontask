@@ -34,13 +34,15 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Future setLocation(LatLng position, {bool moveCamera = false}) async {
-    if (moveCamera) {
-      _googleMapController.moveCamera(CameraUpdate.newLatLng(position));
-    }
     String tempAddress = await LocationService.getPlaceAddress(
       position.latitude,
       position.longitude,
     );
+    await Future.delayed(const Duration(milliseconds: 500));
+    if (moveCamera) {
+      _googleMapController.moveCamera(CameraUpdate.newLatLng(position));
+    }
+
     setState(() {
       _pickedLocation = position;
       _address = tempAddress;
