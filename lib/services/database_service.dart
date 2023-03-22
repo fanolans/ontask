@@ -28,15 +28,44 @@ class DatabaseService {
   }
 
   Stream<List<Todo>> get todos {
-    return _todoReferences.snapshots().map(_todoListFromSnapshot);
+    return _todoReferences
+        .orderBy('completed')
+        .snapshots()
+        .map(_todoListFromSnapshot);
   }
 
-  Future addNewTitle(String title) {
+  Future addNewTodo(String title) {
     return _todoReferences.add(
       {
         'uid': _uid,
+        'completed': false,
         'title': title,
       },
     );
+  }
+
+  Future updateTodo(Todo todo) {
+    return _todoReferences.doc(todo.id).update({
+      'title': todo.title,
+      'note': todo.note,
+      'location': GeoPoint(
+        todo.latitude,
+        todo.longitude,
+      ),
+      'due_date': todo.dueDate == null ? null : todo.dueDate!.toIso8601String(),
+      'completed': todo.completed,
+      'updated_at': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future toogleCompleted(Todo todo) {
+    return _todoReferences.doc(todo.id).update({
+      'completed': todo.completed,
+      'updated_at': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future deleteTodo(String docid) async {
+    return _todoReferences.doc(docid).delete();
   }
 }
