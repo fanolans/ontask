@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ontask/models/place_location.dart';
 import 'package:ontask/models/todo_model.dart';
+import 'package:ontask/services/database_service.dart';
 
 import '../function.dart';
 import '../widgets/map_widget.dart';
@@ -39,6 +40,39 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo Detail'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              bool? isDelete = await showDialog(
+                context: context,
+                builder: (builder) {
+                  return AlertDialog(
+                    title: const Text('Hapus Todo'),
+                    content: const Text('Apakah kamu ingin menghapus todo?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text('Tidak'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text('Hapus'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (isDelete != null && isDelete) {
+                DatabaseService().deleteTodo(_todo.id);
+                Navigator.of(context).pop();
+              }
+            },
+            icon: const Icon(
+              Icons.delete_rounded,
+              color: Colors.red,
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -220,7 +254,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               height: 25,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                DatabaseService().updateTodo(_todo);
+                Navigator.of(context).pop();
+              },
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
@@ -238,7 +275,10 @@ class _TodoDetailScreenState extends State<TodoDetailScreen> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                DatabaseService().toogleCompleted(_todo);
+                Navigator.of(context).pop();
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 shape: RoundedRectangleBorder(
