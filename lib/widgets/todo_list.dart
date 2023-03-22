@@ -35,19 +35,26 @@ class _TodoListState extends State<TodoList> {
             itemCount: todoList.length,
             itemBuilder: (ctx, index) {
               return Card(
+                color: todoList[index].completed ? Colors.green : null,
                 child: ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (builder) => TodoDetailScreen(
-                          todo: todoList[index],
-                        ),
-                      ),
-                    );
-                  },
+                  onTap: todoList[index].completed
+                      ? null
+                      : () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (builder) => TodoDetailScreen(
+                                todo: todoList[index],
+                              ),
+                            ),
+                          );
+                        },
                   leading: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.circle_outlined),
+                    onPressed: () {
+                      DatabaseService().toogleCompleted(todoList[index]);
+                    },
+                    icon: todoList[index].completed
+                        ? const Icon(Icons.check_outlined)
+                        : const Icon(Icons.circle_outlined),
                   ),
                   title: Text(todoList[index].title),
                   subtitle: todoList[index].dueDate == null
