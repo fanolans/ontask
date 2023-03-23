@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
+import '../models/data_user.dart';
 import '../models/todo_model.dart';
 
 class DatabaseService {
@@ -11,6 +15,7 @@ class DatabaseService {
     }
   }
   final _todoReferences = FirebaseFirestore.instance.collection('todos');
+  final _dataUserReference = FirebaseFirestore.instance.collection('users');
 
   List<Todo> _todoListFromSnapshot(QuerySnapshot snapShot) {
     return snapShot.docs.map((doc) {
@@ -32,6 +37,20 @@ class DatabaseService {
         .orderBy('completed')
         .snapshots()
         .map(_todoListFromSnapshot);
+  }
+
+  DataUser _dataUserFromSnapshot(DocumentSnapshot snapshot) {
+    Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+    return DataUser(
+      username: data['username'] ?? '',
+      email: data['email'] ?? '',
+      phone: data['phone'] ?? '',
+      userImageUrl: data['user_image_url'] ?? '',
+    );
+  }
+
+  Stream<DataUser> get dataUser {
+    return _dataUserReference.doc(_uid).snapshots().map(_dataUserFromSnapshot);
   }
 
   Future addNewTodo(String title) {
@@ -60,12 +79,32 @@ class DatabaseService {
 
   Future toogleCompleted(Todo todo) {
     return _todoReferences.doc(todo.id).update({
-      'completed': todo.completed,
+      'completed': !todo.completed,
       'updated_at': FieldValue.serverTimestamp(),
     });
   }
 
   Future deleteTodo(String docid) async {
     return _todoReferences.doc(docid).delete();
+  }
+
+  Future updateUsername(String username) {
+    return _dataUserReference.doc(_uid).update({
+      'username': username,
+      'updated_at': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future uploadUserImage(File file) async {
+    final ref =
+        FirebaseStorage.instance.ref().child('user_data').child('$_uid.jpg');
+    await ref.putFile(file);
+
+    final url = ref.getDownloadURL();
+
+    await _dataUserReference.doc(_uid).update({
+      'user_image_url': url,
+      'updated_at': FieldValue.serverTimestamp(),
+    });
   }
 }
