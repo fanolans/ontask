@@ -19,7 +19,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  LatLng _pickedLocation = LatLng(-6.1754, 106.8272);
+  LatLng _pickedLocation = const LatLng(0, 0);
   String _address = '';
   late GoogleMapController _googleMapController;
 
