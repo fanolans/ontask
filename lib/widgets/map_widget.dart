@@ -32,16 +32,39 @@ class MapWidget extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(width: 0.5),
           borderRadius: BorderRadius.circular(10),
         ),
         child: previewMapUrlImage.isEmpty
-            ? const Center(
-                child: Text('Tap untuk menambahkan lokasi'),
+            ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(
+                  child: Text('Tap untuk menambahkan lokasi'),
+                ),
               )
-            : Image.network(previewMapUrlImage),
+            : Stack(
+                children: [
+                  Image.network(previewMapUrlImage),
+                  Positioned(
+                    right: 0,
+                    child: IconButton(
+                      onPressed: () {
+                        setLocationFn(
+                          PlaceLocation(
+                            latitude: 0.0,
+                            longitude: 0.0,
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ),
+                    ),
+                  )
+                ],
+              ),
       ),
     );
   }
