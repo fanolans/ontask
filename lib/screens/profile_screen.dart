@@ -53,18 +53,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           imageQuality: 30,
                         );
                         if (xFile != null) {
-                          DatabaseService().uploadUserImage(
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (builder) {
+                              return AlertDialog(
+                                content: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: const [
+                                    Text('Memproses Foto'),
+                                    CircularProgressIndicator(),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                          await DatabaseService().uploadUserImage(
                             File(xFile.path),
                           );
+                          Navigator.of(context).pop();
                         }
                       },
-                      child: const CircleAvatar(
+                      child: CircleAvatar(
+                        backgroundImage: dataUser.userImageUrl != ''
+                            ? NetworkImage(dataUser.userImageUrl)
+                            : null,
                         minRadius: 40,
-                        child: Icon(
-                          Icons.person,
-                          size: 30,
-                          color: Colors.white,
-                        ),
+                        child: dataUser.userImageUrl == ''
+                            ? const Icon(
+                                Icons.person,
+                                size: 30,
+                                color: Colors.white,
+                              )
+                            : null,
                       ),
                     ),
                     const SizedBox(
