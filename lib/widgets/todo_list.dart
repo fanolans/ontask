@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ontask/function.dart';
 import 'package:ontask/models/todo_model.dart';
 import 'package:ontask/screens/todo_detail_screen.dart';
 
@@ -60,7 +61,7 @@ class _TodoListState extends State<TodoList> {
                   subtitle: todoList[index].dueDate == null
                       ? null
                       : Text(
-                          todoList[index].dueDate.toString(),
+                          formatDateTime(todoList[index].dueDate),
                         ),
                 ),
               );
