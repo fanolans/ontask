@@ -34,6 +34,8 @@ class DatabaseService {
 
   Stream<List<Todo>> get todos {
     return _todoReferences
+        .where('uid', isEqualTo: _uid)
+        .orderBy('due_date')
         .orderBy('completed')
         .snapshots()
         .map(_todoListFromSnapshot);
@@ -57,6 +59,7 @@ class DatabaseService {
     return _todoReferences.add(
       {
         'uid': _uid,
+        'due_date': null,
         'completed': false,
         'title': title,
       },
@@ -100,7 +103,7 @@ class DatabaseService {
         FirebaseStorage.instance.ref().child('user_data').child('$_uid.jpg');
     await ref.putFile(file);
 
-    final url = ref.getDownloadURL();
+    final url = await ref.getDownloadURL();
 
     await _dataUserReference.doc(_uid).update({
       'user_image_url': url,
